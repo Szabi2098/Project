@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Színváltós Reakciójáték</title>
+</head>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #1e293b;
+      color: white;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      text-align: center;
+      background: #334155;
+      padding: 30px;
+      border-radius: 15px;
+      width: 600px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    #box {
+      width: 200px;
+      height: 200px;
+      margin: 30px auto;
+      background-color: red;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #16a34a;
+      transform: scale(1.05);
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #facc15;
+    }
+
+    #time {
+      margin-top: 15px;
+      font-size: 28px;
+      color: #38bdf8;
+    }
+  </style>
+<body>
+
+  <div class="container">
+    <h1>Reakciójáték</h1>
+
+    <p>
+      Kattints a "Start" gombra!<br>
+      Amint a négyzet zöldre vált, kattints rá minél gyorsabban!
+    </p>
+
+    <div id="box"></div>
+
+    <button id="startBtn">Start</button>
+
+    <div id="message"></div>
+    <div id="time"></div>
+  </div>
+
+  <script>
+    const box = document.getElementById("box");
+    const startBtn = document.getElementById("startBtn");
+    const message = document.getElementById("message");
+    const timeText = document.getElementById("time");
+
+    let startTime;
+    let canClick = false;
+
+    startBtn.addEventListener("click", () => {
+
+      box.style.backgroundColor = "red";
+      message.innerText = "Várj a zöld színre...";
+      timeText.innerText = "";
+      canClick = false;
+
+      const randomDelay = Math.random() * 4000 + 1000;
+
+      setTimeout(() => {
+
+        box.style.backgroundColor = "green";
+        message.innerText = "KATTINTS MOST!";
+
+        startTime = Date.now();
+        canClick = true;
+
+      }, randomDelay);
+    });
+
+    box.addEventListener("click", () => {
+
+      if (!canClick && box.style.backgroundColor !== "green") {
+        message.innerText = "Túl korán kattintottál!";
+        return;
+      }
+
+      if (canClick) {
+
+        const reactionTime = Date.now() - startTime;
+
+        message.innerText = "Szép!";
+        timeText.innerText =
+          `Reakcióidő: ${reactionTime} ms`;
+
+        canClick = false;
+
+        box.style.backgroundColor = "red";
+      }
+    });
+  </script>
+
+</body>
+</html>
