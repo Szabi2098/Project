@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whack-a-Mole</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #1e293b;
+      color: white;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      background: #334155;
+      padding: 30px;
+      border-radius: 15px;
+      width: 600px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    #score {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    #level {
+      font-size: 22px;
+      margin-bottom: 25px;
+      color: #facc15;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 150px);
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .hole {
+      width: 150px;
+      height: 150px;
+      background: #1e293b;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .mole {
+      background: #22c55e;
+    }
+
+    button {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #16a34a;
+      transform: scale(1.05);
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #facc15;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Whack-a-Mole</h1>
+
+    <div id="score">Pontszám: 0</div>
+    <div id="level">Szint: 1</div>
+
+    <div class="grid">
+      <div class="hole"></div>
+      <div class="hole"></div>
+      <div class="hole"></div>
+
+      <div class="hole"></div>
+      <div class="hole"></div>
+      <div class="hole"></div>
+
+      <div class="hole"></div>
+      <div class="hole"></div>
+      <div class="hole"></div>
+    </div>
+
+    <button id="startBtn">Játék indítása</button>
+
+    <div id="message"></div>
+
+  </div>
+
+  <script>
+    const holes = document.querySelectorAll(".hole");
+    const scoreText = document.getElementById("score");
+    const levelText = document.getElementById("level");
+    const startBtn = document.getElementById("startBtn");
+    const message = document.getElementById("message");
+
+    let score = 0;
+    let level = 1;
+    let speed = 800;
+
+    let currentHole = null;
+    let gameInterval;
+    let moleClicked = true;
+    let gameRunning = false;
+
+    function moveMole() {
+
+      if (!moleClicked) {
+        endGame("❌ Nem kattintottál időben!");
+        return;
+      }
+
+      moleClicked = false;
+
+      holes.forEach(hole => {
+        hole.classList.remove("mole");
+      });
+
+      const randomIndex = Math.floor(Math.random() * holes.length);
+
+      currentHole = holes[randomIndex];
+
+      currentHole.classList.add("mole");
+    }
+
+    function updateDifficulty() {
+
+      level = Math.floor(score / 5) + 1;
+
+      levelText.innerText = `Szint: ${level}`;
+
+      speed = 800 - (level - 1) * 100;
+
+      if (speed < 250) {
+        speed = 250;
+      }
+
+      clearInterval(gameInterval);
+
+      gameInterval = setInterval(moveMole, speed);
+    }
+
+    function endGame(text) {
+
+      gameRunning = false;
+
+      clearInterval(gameInterval);
+
+      holes.forEach(hole => {
+        hole.classList.remove("mole");
+      });
+
+      message.innerText =
+        `${text} | Pontszám: ${score}`;
+    }
+
+    holes.forEach(hole => {
+
+      hole.addEventListener("click", () => {
+
+        if (!gameRunning) return;
+
+        if (hole === currentHole) {
+
+          score++;
+
+          moleClicked = true;
+
+          scoreText.innerText =
+            `Pontszám: ${score}`;
+
+          hole.classList.remove("mole");
+
+          currentHole = null;
+
+          updateDifficulty();
+        }
+      });
+    });
+
+    startBtn.addEventListener("click", () => {
+
+      score = 0;
+      level = 1;
+      speed = 800;
+
+      moleClicked = true;
+      gameRunning = true;
+
+      scoreText.innerText = "Pontszám: 0";
+      levelText.innerText = "Szint: 1";
+
+      message.innerText =
+        "Játék folyamatban...";
+
+      clearInterval(gameInterval);
+
+      moveMole();
+
+      gameInterval = setInterval(moveMole, speed);
+    });
+  </script>
+
+</body>
+</html>
