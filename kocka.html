@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dobókocka Párbaj</title>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Dobókocka Párbaj</h1>
+
+    <div class="dice-wrapper">
+
+      <div class="player">
+        <h2>1. Játékos</h2>
+        <img id="dice1" src="dice/dice1.jpg" alt="Kocka 1">
+      </div>
+
+      <div class="player">
+        <h2>2. Játékos</h2>
+        <img id="dice2" src="dice/dice2.jpg" alt="Kocka 2">
+      </div>
+
+    </div>
+
+    <button id="rollBtn">Dobás</button>
+
+    <div id="result">Ki fog nyerni?</div>
+  </div>
+
+  <script>
+    const dice1 = document.getElementById("dice1");
+    const dice2 = document.getElementById("dice2");
+    const result = document.getElementById("result");
+    const rollBtn = document.getElementById("rollBtn");
+
+    const diceImages = [
+      "",
+      "dice/dice1.jpg",
+      "dice/dice2.jpg",
+      "dice/dice3.jpg",
+      "dice/dice4.jpg",
+      "dice/dice5.jpg",
+      "dice/dice6.jpg"
+    ];
+
+    rollBtn.addEventListener("click", () => {
+
+      const random1 = Math.floor(Math.random() * 6) + 1;
+      const random2 = Math.floor(Math.random() * 6) + 1;
+ 
+      dice1.src = diceImages[random1];
+      dice2.src = diceImages[random2];
+
+      if (random1 > random2) {
+        result.innerText = "Az 1. játékos nyert!";
+      }
+      else if (random2 > random1) {
+        result.innerText = "A 2. játékos nyert!";
+      }
+      else {
+        result.innerText = "Döntetlen!";
+      }
+    });
+  </script>
+
+</body>
+</html>
